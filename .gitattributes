@@ -1,0 +1,3 @@
+# Normalize line endings in the repo to LF, independent of each machine's
+# core.autocrlf setting. Keeps diffs clean across the desktop and the laptop.
+* text=auto eol=lf
