@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-finance",
+  "run_config": "without_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": false,
+      "evidence": "Output is a comprehensive multi-section study guide (8 sections). It has no 'In the News' section and no standalone 'Devil's Advocate' section — only a 'Devil's Advocate Challenges' subsection with bullet points."
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": false,
+      "evidence": "No single 'Previous Session Summary' section exists. Material is spread across sections 1-3 totaling 600+ words."
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": false,
+      "evidence": "No 'In the News' section present. No news items with sources and dates."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": false,
+      "evidence": "No news items present."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument to MM theorem or capital structure orthodoxy, not just a restatement",
+      "passed": true,
+      "evidence": "'Devil's Advocate Challenges' subsection raises the leverage puzzle, pecking order, market timing, and Miller (1977) investor-level taxes. Content is substantive."
+    }
+  ]
+}

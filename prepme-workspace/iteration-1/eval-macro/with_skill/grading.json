@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-macro",
+  "run_config": "with_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": true,
+      "evidence": "Output has '### Previous Session Summary', '### In the News', '### Devil's Advocate' in correct order."
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": true,
+      "evidence": "Summary is approximately 270 words covering Taylor Rule, 2021 miss, 2022-2024 hiking cycle, near-soft landing, and transmission mechanism."
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": true,
+      "evidence": "3 items: CNBC/Fed (March 18 2026), Wellington Management/St. Louis Fed (April 2026), CME FedWatch/Yahoo Finance (April 2026). All have source and date."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": true,
+      "evidence": "All three items are from March-April 2026, well within the 6-month window. Live WebSearch used."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument challenging the Taylor Rule or effectiveness of rate hikes",
+      "passed": true,
+      "evidence": "DA argues the 2022-24 disinflation was supply-side self-healing not caused by rate hikes, that SVB collapse showed rate hikes created financial instability, and questions whether Taylor Rule is a decision tool or communication tool."
+    }
+  ]
+}

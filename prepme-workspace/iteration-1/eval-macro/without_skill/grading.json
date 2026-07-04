@@ -1,0 +1,32 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-macro",
+  "run_config": "without_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": false,
+      "evidence": "Output is a multi-section study guide (8 sections: Core Concepts, Hiking Cycle, Volcker Comparison, Key Debates, Vocabulary, Things to Say in Class, Devil's Advocate Challenges). No 'In the News' section, no single 'Devil's Advocate' section."
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": false,
+      "evidence": "No single summary section. Section 1 alone (Core Concepts) is 300+ words, but the full guide is 700+ words — not a targeted previous-class summary."
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": false,
+      "evidence": "No news items section present."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": false,
+      "evidence": "No news items present."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument challenging the Taylor Rule or effectiveness of rate hikes",
+      "passed": true,
+      "evidence": "Section 7 'Devil's Advocate Challenges' contains: Taylor Rule coefficients are arbitrary, SVB collapse caused by rate hikes, 'transitory' call may reflect political economy pressures. Substantive content."
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-finance",
+  "run_config": "with_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": true,
+      "evidence": "Output has '### Previous Session Summary', '### In the News', '### Devil's Advocate' headings in correct order."
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": true,
+      "evidence": "Summary section is approximately 320 words covering MM Prop I, Prop II, tax shield, tradeoff theory, and Tesla case."
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": true,
+      "evidence": "3 items: OECD Global Debt Report (Feb 2026), CNBC (March 27 2026), Moody's/Octus (Jan 2026). All have source and date."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": true,
+      "evidence": "All three items are from January–March 2026, well within 6 months of April 2026. Live WebSearch used."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument to MM theorem or capital structure orthodoxy, not just a restatement",
+      "passed": true,
+      "evidence": "DA introduces pecking order theory (Myers & Majluf) and market timing theory (Baker & Wurgler) as alternative explanations, notes the leverage puzzle and weak evidence for active rebalancing."
+    }
+  ]
+}

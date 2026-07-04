@@ -1,0 +1,32 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-strategy",
+  "run_config": "with_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": true,
+      "evidence": "Output has exactly the three headings: '### Previous Session Summary', '### In the News', '### Devil's Advocate'"
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": true,
+      "evidence": "Summary section is approximately 350 words, covering all five forces and the core takeaway"
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": true,
+      "evidence": "3 items present: WSJ (Jan-Mar 2025), Reuters (March 2025), FT (February 2025). All have source and date."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": false,
+      "evidence": "Items are from Jan-March 2025, which is more than 6 months before April 2026. WebSearch was unavailable; training data was used instead."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument to the class material, not just a restatement",
+      "passed": true,
+      "evidence": "DA section challenges Five Forces as 'static', cites the US oligopoly 2015-2019 as empirical counterexample, argues firms can reshape structure, recommends RBV as complementary lens"
+    }
+  ]
+}

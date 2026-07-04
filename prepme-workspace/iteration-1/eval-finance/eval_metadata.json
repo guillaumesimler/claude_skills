@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-finance",
+  "prompt": "/prepclass — Corporate Finance tomorrow. Last session we covered WACC and capital structure, specifically the Modigliani-Miller theorem and how leverage affects firm value. Notes: MM Theorem Proposition I (capital structure irrelevance under perfect markets), Proposition II (cost of equity rises with leverage), the tax shield from debt, and the tradeoff theory balancing tax benefits against financial distress costs. Case: Tesla's capital structure evolution 2019-2023.",
+  "assertions": [
+    {
+      "id": "has_three_sections",
+      "description": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate"
+    },
+    {
+      "id": "summary_length",
+      "description": "Previous session summary is between 150 and 450 words"
+    },
+    {
+      "id": "three_news_items",
+      "description": "Exactly 3 news items are listed, each with a source name and a date"
+    },
+    {
+      "id": "news_recency",
+      "description": "All news items are dated within the last 6 months (after October 2024)"
+    },
+    {
+      "id": "devil_advocate_challenges",
+      "description": "The Devil's Advocate section presents a genuine counterargument to MM theorem or capital structure orthodoxy, not just a restatement"
+    }
+  ]
+}

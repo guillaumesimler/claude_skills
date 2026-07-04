@@ -1,0 +1,32 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-strategy",
+  "run_config": "without_skill",
+  "assertions": [
+    {
+      "text": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate",
+      "passed": true,
+      "evidence": "Output has the three sections, though 'In the News' section is headed differently. All three are present and clearly delineated."
+    },
+    {
+      "text": "Previous session summary is between 150 and 450 words",
+      "passed": true,
+      "evidence": "Summary section is approximately 280 words covering all five forces."
+    },
+    {
+      "text": "Exactly 3 news items are listed, each with a source name and a date",
+      "passed": true,
+      "evidence": "3 items with sources (WSJ/Bloomberg, Reuters/FT, IATA/The Economist) and date ranges."
+    },
+    {
+      "text": "All news items are dated within the last 6 months (after October 2025)",
+      "passed": false,
+      "evidence": "Items are from 2024-early 2025, outside the 6-month window ending April 2026."
+    },
+    {
+      "text": "The Devil's Advocate section presents a genuine counterargument to the class material, not just a restatement",
+      "passed": true,
+      "evidence": "DA challenges structural determinism with firm-level variance examples (Southwest, Ryanair, Delta), measurement critique, and the static/dynamic distinction."
+    }
+  ]
+}

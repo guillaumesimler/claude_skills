@@ -1,0 +1,27 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-strategy",
+  "prompt": "Prep me for my Strategy class. We covered Porter's Five Forces last time, applied to the airline industry. The main takeaway was that airlines face brutal competitive pressure from all five forces simultaneously, which explains the sector's chronic low profitability.",
+  "assertions": [
+    {
+      "id": "has_three_sections",
+      "description": "Output contains all three required sections: Previous Session Summary, In the News, and Devil's Advocate"
+    },
+    {
+      "id": "summary_length",
+      "description": "Previous session summary is between 150 and 450 words"
+    },
+    {
+      "id": "three_news_items",
+      "description": "Exactly 3 news items are listed, each with a source name and a date"
+    },
+    {
+      "id": "news_recency",
+      "description": "All news items are dated within the last 6 months (after October 2024)"
+    },
+    {
+      "id": "devil_advocate_challenges",
+      "description": "The Devil's Advocate section presents a genuine counterargument to the class material, not just a restatement or soft qualification"
+    }
+  ]
+}

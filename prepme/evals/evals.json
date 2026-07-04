@@ -1,0 +1,23 @@
+{
+  "skill_name": "prepme",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Prep me for my Strategy class. We covered Porter's Five Forces last time, applied to the airline industry. The main takeaway was that airlines face brutal competitive pressure from all five forces simultaneously, which explains the sector's chronic low profitability.",
+      "expected_output": "A class prep document with: (1) ~300 word summary of Porter's Five Forces applied to airlines, (2) 3 recent news items about airline industry competition or strategic shifts, (3) devil's advocate challenging whether Five Forces is still the right lens for the airline industry",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "/prepclass — Corporate Finance tomorrow. Last session we covered WACC and capital structure, specifically the Modigliani-Miller theorem and how leverage affects firm value. Here are my notes: [notes pasted inline] Lecture covered: MM Theorem Proposition I (capital structure irrelevance under perfect markets), Proposition II (cost of equity rises with leverage), the tax shield from debt, and the tradeoff theory balancing tax benefits against financial distress costs. Case: Tesla's capital structure evolution 2019-2023.",
+      "expected_output": "A class prep document with: (1) ~300 word summary of WACC, MM theorem, capital structure tradeoffs, (2) 3 recent news items about corporate capital structure decisions or interest rate impacts on financing, (3) devil's advocate challenging MM assumptions or the tax shield argument",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "prepclass — Macroeconomics, session on monetary policy and the Fed's rate decisions. We discussed the Taylor Rule, how central banks set rates, and the 2022-2024 rate hiking cycle to fight post-COVID inflation. What do I need to know before tomorrow?",
+      "expected_output": "A class prep document with: (1) ~300 word summary of monetary policy tools, the Taylor Rule, and the recent rate hiking cycle, (2) 3 recent news items about Fed decisions or global central bank policy, (3) devil's advocate challenging Fed orthodoxy or the effectiveness of rate hikes against supply-side inflation",
+      "files": []
+    }
+  ]
+}
