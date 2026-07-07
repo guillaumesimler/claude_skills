@@ -28,8 +28,19 @@ correctly-classified, fully-linked briefing that the downstream skill can apply
 mechanically without having to re-derive intent. Get the classification and the
 cross-references right; let the downstream own final numbering and the on-disk write.
 
-Output is one markdown file in `/mnt/user-data/outputs/`. Plain LF is fine — Claude
-Code enforces CRLF on the vault write.
+Output is one markdown file written **directly into the vault's `01_inbox/`
+directory** — that is where the vault-reconciliation workflow picks pending briefs up.
+Name it `YYYY-MM-DD_vault-brief-<area>.md`. Plain LF is fine — Claude Code enforces
+CRLF on the vault write.
+
+The vault root is **machine-specific** (differs between Guillaume's desktop and laptop),
+so do **not** hardcode it. Resolve it at write time: use the path recorded in the
+`vault-local-path` memory (currently `C:\Users\simle\Documents\ai-stack`), and if that
+directory does not exist on the current machine, locate the vault by finding the folder
+that contains `06_decisions-log.md` before writing. Write to `<vault-root>\01_inbox\`.
+Do **not** fall back to the scratchpad or a temp directory — if the inbox cannot be
+found, say so and ask, rather than saving somewhere the reconciliation workflow won't
+look.
 
 ## Trigger
 
@@ -174,6 +185,9 @@ Omit empty sections. Lead with whatever dominated the session (often Decisions).
 
 ## After presenting
 
-Say explicitly: this is the input for the vault-reconciliation conversation — paste it
-there and let Claude Code write the vault. Don't claim anything was written to the
-vault from here.
+State where the file was saved (`<vault-root>\01_inbox\`) and that this is the input
+for the vault-reconciliation conversation — it will pick the brief up from the inbox
+and apply it. Be precise about what did and didn't happen: dropping the brief file into
+`01_inbox/` is staging, **not** a vault write — no vault *entries* (decisions log,
+principles, agent specs) were created or edited from here. The reconciliation workflow
+owns the actual application, final numbering, and CRLF.
