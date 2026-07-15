@@ -1,6 +1,7 @@
 # SessionStart hook: keep local repos in sync with GitHub across both PCs.
-# Fetches ~/.claude/skills and every git repo directly under C:\dev, then
-# fast-forward pulls any repo that is behind and has a clean working tree.
+# Fetches ~/.claude/skills, the ai-stack vault (~/Documents/ai-stack), and
+# every git repo directly under C:\dev, then fast-forward pulls any repo
+# that is behind and has a clean working tree.
 # Never rebases, merges, or touches dirty trees - it only reports those.
 
 $env:GIT_TERMINAL_PROMPT = '0'
@@ -8,6 +9,8 @@ $env:GIT_TERMINAL_PROMPT = '0'
 $repos = @()
 $skills = Join-Path $HOME '.claude\skills'
 if (Test-Path (Join-Path $skills '.git')) { $repos += $skills }
+$vault = Join-Path $HOME 'Documents\ai-stack'
+if (Test-Path (Join-Path $vault '.git')) { $repos += $vault }
 if (Test-Path 'C:\dev') {
     $repos += Get-ChildItem 'C:\dev' -Directory |
         Where-Object { Test-Path (Join-Path $_.FullName '.git') } |
