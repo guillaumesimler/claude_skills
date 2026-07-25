@@ -1,20 +1,21 @@
 ---
 name: framework-card
-description: |
+description: >
   Create, enrich, or review framework cards in Guillaume's ai-stack vault (20_frameworks/)
-  per the SPEC-framework-library-v1.3 contract. Trigger when he wants to add, draft, promote,
-  or enrich a framework card, work the Phase 2/3 backlog, process inventory rows, regenerate
-  00_INDEX.md, or names any strategy/marketing/innovation/ops framework to file. Works on any
-  surface (Claude Code, Cowork, claude.ai); filing adapts, the card contract never does.
-  Not for applying a framework to a company/deal (30_finance/.../agent-drafts/), source-note
-  frontmatter (vault-source-frontmatter), or pure corporate-finance mechanics that only enrich
-  an existing card (#131 — finance courses are otherwise in scope, #162).
+  per the SPEC-framework-library-v1.4 contract. Trigger when he wants to add, draft, promote,
+  or enrich a framework card, run a coherence pass over a card class, work the Phase 2/3
+  backlog, process inventory rows, regenerate 00_INDEX.md, or names any
+  strategy/marketing/innovation/ops framework to file. Works on any surface (Claude Code,
+  Cowork, claude.ai); filing adapts, the card contract never does. Not for applying a
+  framework to a company/deal (30_finance/.../agent-drafts/), source-note frontmatter
+  (vault-source-frontmatter), or pure corporate-finance mechanics that only enrich an
+  existing card (#131 — finance courses are otherwise in scope, #162).
 ---
 
 # framework-card
 
 Enforcement layer for the vault framework library. The design authority is
-`10_stack/specs/SPEC-framework-library-v1_3.md` in the vault — read it if a situation
+`10_stack/specs/SPEC-framework-library-v1_4.md` in the vault — read it if a situation
 falls outside this file. Cards live flat in `20_frameworks/`, one file per framework,
 `<framework-name>.md` (lowercase kebab). The index `00_INDEX.md` is the selection
 interface; cards are the source of truth and the index is regenerable from their frontmatter.
@@ -89,6 +90,9 @@ Body sections, all present and in this order; write "n/a" only when true. **No t
 5. **Steps** — how to run it, compressed.
 6. **Outputs** — what a completed application looks like.
 7. **Adjacent & confusable** — pairs-with and mistaken-for (e.g. Porter ≠ 4 Ps).
+   **References to other cards are `[[wikilinks]]` to the card slug (v1.4);** non-carded
+   concepts (Schein, Kübler-Ross, …) stay plain text. Legacy plain-name refs are queued
+   for the retrofit backward pass — conform on every card you touch, don't mass-rewrite.
 8. **Course notes** — professor variant, emphasis, worked examples, labelled by provider
    (**ESADE:** … / **HEC:** …). The only section allowed to be empty.
 9. **Sources** — `[[wikilinks]]` to every `00_sources/` note the card draws on, decks AND
@@ -104,12 +108,9 @@ portfolio-allocation · pricing · growth-strategy · innovation-pipeline · go-
 org-design · change-management · operating-model · negotiation · value-creation-plan ·
 nonmarket-ethics · talent-management`
 
-(`nonmarket-ethics` added 2026-07-16 — political/regulatory/nonmarket problems plus the
-business-ethics corpus; communication content has no domain of its own, folding into
-`negotiation` or `other`. `talent-management` added 2026-07-17 — hiring, performance,
-development, derailment.) The set is **frozen**: it carried the full 28-course extraction
-without strain-driven additions. You may propose an addition, but flag it explicitly and
-get Guillaume's yes — never invent a tag silently.
+The set is **frozen**: it carried the full 28-course extraction without strain-driven
+additions. You may propose an addition, but flag it explicitly and get Guillaume's yes —
+never invent a tag silently.
 
 ## Modes
 
@@ -120,20 +121,16 @@ Draft the full card first, then ask **max 5 clarification questions**, prioritiz
 he seen it break (feeds pitfalls); (3) professor variant worth keeping. File the card,
 append the index row, close out per the surface's filing mechanics.
 
-**course batch** — the default for working the inventory (GS ruling 2026-07-16: this
-replaces the solo disposition pass; the Disposition column is a record, not a gate).
-Flow: pull the course's rows → propose a disposition cut (core / tail / drop / merge
-candidates) in ONE question set, GS rules → stage sources → draft all cards → ONE batched
-clarification pass (≤5 questions across the batch) → file everything together → one
-`vault-briefing`-shaped brief to `01_inbox/` + the `esade-course-status.md` tracker update.
-**Dedup-hit protocol:** a row whose framework is already carded is a dedup hit — do not
-re-create; add the new course's occurrences to lineage and a labelled entry to Course
-notes only where the new sources actually add content, plus the mandatory cross-reference
-at batch time; heavy enrichment is deferred to a backward pass.
-**Integrated-course pattern:** when a course is one framework taught in per-session
-fragments (Bertini pricing #158; the ops systems #159), map the architecture first with a
-dedicated agent over syllabus + decks, propose an umbrella + hub-and-spoke card set, and get
-Guillaume's structural ruling — never card atomic tool-rows.
+**course batch** — the default for working the inventory (GS ruling 2026-07-16). Flow:
+pull the course's rows → propose a disposition cut (core / tail / drop / merge candidates)
+in ONE question set, GS rules → stage sources → draft all cards → ONE batched clarification
+pass (≤5 questions across the batch) → file everything together → one `vault-briefing`-shaped
+brief to `01_inbox/` + the `esade-course-status.md` tracker update.
+**Dedup-hit protocol:** an already-carded row is a dedup hit — merge lineage/course notes
+into the existing card, mandatory cross-reference at batch time, heavy enrichment deferred.
+**Integrated-course pattern:** a course that is one framework in per-session fragments gets
+architecture-mapped first, then an umbrella / hub-and-spoke proposal for GS's structural
+ruling — never atomic tool-rows.
 
 **enrich** — existing card + model knowledge. Set `enrichment: true`, bump `enriched-by-model`;
 enrichment lands mostly in *pitfalls* and *adjacent*. Bump `updated:`, file per surface.
@@ -142,36 +139,39 @@ enrichment lands mostly in *pitfalls* and *adjacent*. Bump `updated:`, file per 
 existing draft, tighten the prose, verify the contract (esp. a real pitfalls entry),
 re-file, update the index row, file per surface.
 
+**coherence pass (v1.4)** — per-class dedup & cross-reference maintenance. Scope a class
+(a domain or problem-signature slice) → stage it → frontmatter/alias collision scan +
+Adjacent cross-walk → full-body verification sweep by a second agent (verify suspected
+overlaps, hunt missed ones, check shared facts across cards) → **report first**: merges,
+missing backlinks, prose-overlap, consistency nits, each with a recommendation → GS rules →
+batch-edit. Merges obey the one-card rule: absorb aliases, lineage, course notes; delete
+the losing file via git; repoint inbound references; one index row. Every pass ends with
+the standard brief to `01_inbox/`. First runs (2026-07-23): innovation, change-management.
+
 ## Hard rules
 
 - **Dedup:** before creating, search existing cards' `name` and `aliases`. On collision,
   refuse to create a second card — merge lineage and course notes into the existing one
   instead. One card per framework, no matter how many courses teach it.
+- **Cross-references (v1.4):** card-to-card references in Adjacent/body are `[[wikilinks]]`;
+  every card you edit for any reason gets its NEW references wikilinked (legacy plain names
+  on untouched lines wait for the retrofit pass).
 - **Lineage integrity:** every Sources wikilink must resolve to an existing
-  `00_sources/*.md` file — verify where the surface allows. No card without lineage: at
-  least one source file or `enrichment: true` with the sources that do exist.
+  `00_sources/*.md` file — verify where the surface allows. No card without lineage.
 - **Provenance:** `generated-by-model` is the original drafter — set once, never overwritten,
-  forward-only (cards predating 2026-07-17 may lack it; don't backfill from guesswork).
-  `enriched-by-model` is overwritten on every enrichment pass. Both carry the model's short
-  name (`Opus 4.8`, `Fable 5`), never the API id (`claude-opus-4-8`).
-- **Draws-on beats verbatim** (GS ruling, 2026-07-16, first card): the inventory row's
-  occurrence list is the authoritative *spelling* of filenames, not an obligation to cite
-  them all. An occurrence that doesn't actually inform the card (a passing mention, an
-  extraction false positive) is struck from lineage — flag the strikes to Guillaume so he
-  can veto, and so the inventory row can carry the note.
-- **Scope (#162, reverses the old finance ban):** finance courses are in scope, carded
-  **drop-heavy / thin-core / near-zero-tail** — for a domain Guillaume knows cold, drop beats
-  tail (a finance tail card is dead inventory). Card only finance frameworks non-obvious even
-  to him or genuinely cross-domain. The #131 boundary holds: cross-domain finance mechanics
-  (LTV/CAC/payback/burn) enrich existing cards, not new ones; pure accounting/corporate-finance
-  content stays out.
-- **Index:** append one row per card: `| Name | Aliases | Domain | Reach for it when… | Tier | Status |`.
-  The "reach for it when" cell is one line — it does the selection work, make it earn its place.
-- **Prose register:** de-slop applies — direct, concrete, no filler, no consultant-brochure
-  tone. The card is for a reader who runs deals, not a student.
+  forward-only. `enriched-by-model` is overwritten on every enrichment pass. Both carry the
+  model's short name (`Opus 4.8`, `Fable 5`), never the API id.
+- **Draws-on beats verbatim** (GS ruling 2026-07-16): the inventory row's occurrence list is
+  the authoritative *spelling* of filenames, not an obligation to cite them all. Strike
+  occurrences that don't inform the card — flag the strikes so GS can veto.
+- **Scope (#162):** finance courses in scope, carded drop-heavy / thin-core / near-zero-tail.
+  The #131 boundary holds: cross-domain finance mechanics enrich existing cards, not new ones.
+- **Index:** one row per card: `| Name | Aliases | Domain | Reach for it when… | Tier | Status |`.
+  The "reach for it when" cell is one line — it does the selection work.
+- **Prose register:** de-slop applies — direct, concrete, no filler. The card is for a
+  reader who runs deals, not a student.
 - **Mechanics:** CRLF line endings, valid YAML, `updated:` bumped on every body change
-  (index frontmatter too, when a row is appended).
+  (index frontmatter too, when a row changes).
 - **Boundaries:** never write into `00_sources/`, `40_courses/`, `90_meta/`, or the **vault
-  root** (`00_README.md`, `CLAUDE.md`, the `06_*` logs, `07_backlog.md`, …). Never write
-  `06c_update-log.md` or `06_decisions-log.md` — the reconciliation line owns both. Framework
-  *applications* to companies/deals go to `30_finance/.../agent-drafts/`, not here.
+  root**. Never write `06c_update-log.md` or `06_decisions-log.md` — the reconciliation line
+  owns both. Framework *applications* go to `30_finance/.../agent-drafts/`, not here.
