@@ -1,118 +1,179 @@
 ---
 name: vault-briefing
 description: >-
-  Produce a structured session-to-vault briefing that Guillaume's separate Claude
-  Code vault-reconciliation conversation applies to his Obsidian ai-stack vault. Use
-  whenever he says "prepare the brief", "wrap up the work for the vault", "vault
-  read", "prepare the vault element", or runs /vault-brief — or at the end of any
-  session that produced decisions, amendments, deferrals, or new principles for the
-  vault. Sorts each item into its correct vault home (decisions, deferred,
-  principles, backlog, agent specs), enforces the cross-reference discipline, and
-  keeps principles distinct from decisions. Do NOT write the vault directly (chat
-  Claude can't) or handle source-note frontmatter (that's vault-source-frontmatter).
+  Produce a structured session-to-vault briefing for one of Guillaume's two vaults —
+  the ai-stack vault at C:\dev\_ai_vault, or the career vault at C:\dev\_career_vault.
+  Use whenever he says "prepare the brief", "wrap up the work for the vault", "vault
+  read", "prepare the vault element", or runs /vault-brief — and at the end of any
+  session that settled something the vault has to hold: decisions, amendments,
+  deferrals, principles, backlog, index rows, application state. In the career vault
+  this is also the ONLY way an application chat may change the spine files
+  (00_INDEX.md, 00_README.md, 06_decisions-log.md, 07_backlog.md, CLAUDE.md,
+  90_meta/) — it briefs, the governance chat writes. Sorts each item into its correct
+  vault home and enforces the cross-reference discipline. Always lands the finished
+  brief in that vault's 01_inbox/ when a desktop is connected, not just as a chat
+  download. Do NOT write the spine directly, and do NOT handle source-note frontmatter
+  (that's vault-source-frontmatter).
 ---
 
 # Vault briefing
 
 ## What this is
 
-A briefing is the **structured handoff** between a working session (here, in chat)
-and Guillaume's vault. Chat Claude **cannot write the vault** — the vault is plain
-markdown on the homeserver, and only **Claude Code** edits it, human-triggered. A
-*separate* vault-reconciliation conversation ingests this briefing, checks it for
-consistency against the master vault, and writes the actual entries with final
-numbering and CRLF.
+A briefing is the **structured handoff** between a working session and one of the two
+vaults. The session that did the work does not write the governed files; it states the
+change it needs, and a single downstream owner applies it with final numbering.
 
-So the job here is **not** to produce finished vault notes. It is to produce a clean,
-correctly-classified, fully-linked briefing that the downstream skill can apply
-mechanically without having to re-derive intent. Get the classification and the
-cross-references right; let the downstream own final numbering and the on-disk write.
+The job is **not** to produce finished vault notes. It is to produce a clean,
+correctly-classified, fully-linked brief the downstream can apply mechanically without
+re-deriving intent. Get classification and cross-references right; let the downstream
+own final numbering and the on-disk write of the governed files.
 
-Output is one markdown file written **directly into the vault's `01_inbox/`
-directory** — that is where the vault-reconciliation workflow picks pending briefs up.
-Name it `YYYY-MM-DD_vault-brief-<area>.md`. Plain LF is fine — Claude Code enforces
-CRLF on the vault write.
+Two vaults, two contracts. **Pick the mode first — they differ in filename, YAML,
+targets, number space, and who applies the brief.** Everything below is marked
+`[ai-stack]`, `[career]`, or applies to both.
 
-The vault root is **machine-specific** (differs between Guillaume's desktop and laptop),
-so do **not** hardcode it. Resolve it at write time: use the path recorded in the
-`vault-local-path` memory (currently `C:\Users\simle\Documents\ai-stack`), and if that
-directory does not exist on the current machine, locate the vault by finding the folder
-that contains `06_decisions-log.md` before writing. Write to `<vault-root>\01_inbox\`.
-Do **not** fall back to the scratchpad or a temp directory — if the inbox cannot be
-found, say so and ask, rather than saving somewhere the reconciliation workflow won't
-look.
+## Step 0 — which vault
+
+Ask, in order:
+
+- Did the session touch `C:\dev\_career_vault`, an application, a hand-off, a CV or
+  letter, a touchpoint, a closure? → **career mode**.
+- Did it touch `C:\dev\_ai_vault`, an agent, the stack, code in `C:\dev\ai-stack-agents`
+  or `pdf_to_md`? → **ai-stack mode**.
+- Both? → **two briefs, one per vault.** Never one brief spanning both. `90_meta/bridge.md`
+  is explicit: a file that exists in both vaults is a defect, and so is a brief that
+  proposes into both. If a career ruling turns out to be about the stack, it is
+  *proposed* into `_ai_vault/01_inbox/` and **re-minted there as its own `#NNN`** — it
+  never keeps its `C-` number.
+
+Vault roots are `C:\dev\_ai_vault` and `C:\dev\_career_vault` on both machines. If a
+root is missing, locate it by marker — **both vaults contain `06_decisions-log.md`, so
+that file alone does not disambiguate**: `04_agents/` means ai-stack, `20_applications/`
+means career. Do **not** fall back to the scratchpad or a temp directory. If the inbox
+cannot be found, say so and ask, rather than saving where nobody looks.
+
+## Where the brief lands
+
+**`[ai-stack]`** — `<vault>\01_inbox\YYYY-MM-DD_vault-brief-<area>.md`. Plain LF is fine;
+the reconciliation line enforces CRLF on the vault write. Applied by the **separate
+vault-reconciliation conversation**, which has been the single source of truth for that
+vault's decisions log since VII.
+
+**`[career]`** — `<vault>\01_inbox\YYYY-MM-DD_brief_<slug>.md`. Two in one day from one
+chat take `_a` / `_b`. Required YAML:
+
+```yaml
+---
+type: inbox
+status: draft
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+tags: [p/career, t/brief]
+brief-from: <the emitting chat — application slug, or the campaign-wide task>
+applied:
+---
+```
+
+`applied:` stays blank; the **campaign-documentation chat** stamps it. An applied brief
+is not deleted — it goes `status: archived` with `applied:` filled, because it is the
+only record that the handoff happened.
+
+**Always write the file when a desktop is connected.** A brief that exists only as chat
+text or a download has not been handed off. If there is no filesystem (plain claude.ai),
+say so plainly and give the full file content for Guillaume to paste.
 
 ## Trigger
 
-`/vault-brief`, or any of: "prepare the brief", "wrap up the work for the vault",
-"vault read", "prepare the vault element", "log this to the vault". Also fire
-proactively at the natural end of a session that produced vault-worthy decisions, and
-offer to brief.
+`/vault-brief`, or: "prepare the brief", "wrap up the work for the vault", "vault read",
+"prepare the vault element", "log this to the vault". Also fire proactively at the end of
+a session that settled vault-worthy items, and offer to brief.
+
+**`[career]` this is not optional.** Any session that wrote to the career vault ends with
+a brief. A session that changed application state and left no brief **has lost that state
+to the chat** — the folder holds the application, the spine holds the campaign, and
+nothing else reconciles them.
 
 ## Workflow
 
-1. **Inventory the session.** Walk what was actually settled — not what was merely
-   discussed. A decision is something that *changed the design or the plan*. Idle
-   exploration that led nowhere is not a vault entry.
-2. **Read the live vault format and current numbering** (cheap, best-effort). If the
-   project files are mounted/connected, peek at `06_decisions-log.md` for the current
-   max `#NNN` and the live ADR shape, `06b_deferred-decisions.md` and
-   `01_principles.md` for their formats. This is the single source of truth; prefer it
-   over the templates embedded below. Don't spend many tokens here — one read each.
-   If the files aren't available, fall back to the embedded templates and mark
-   numbering `#NNN (next available — confirm)`.
-3. **Classify each item** into its vault home (decision tree below).
+1. **Inventory the session.** What was *settled*, not what was discussed. A decision
+   changed the design or the plan. Exploration that led nowhere is not an entry.
+2. **Read the live format and current numbering** (cheap, best-effort — one read each).
+   `[ai-stack]` `06_decisions-log.md` for max `#NNN`, `06b_deferred-decisions.md`,
+   `01_principles.md`. `[career]` `06a_decisions-index.md` for max `C-NNN`, `00_INDEX.md`
+   for the live row shape, `07_backlog.md` for section names. The live files beat the
+   templates below.
+3. **Classify each item** into its vault home (tree below).
 4. **Draft each entry** in the matching format, with a **Related:** line.
-5. **Run the guardrails** (principle-vs-decision, linkage, amendment-needs-edit).
-6. **Write the briefing** and present it. State plainly that it's an input for the
-   vault-reconciliation conversation, not a vault write.
+5. **Run the guardrails.**
+6. **Write the brief to `01_inbox/`** and present it. State plainly that it is an input,
+   not an application.
 
-## Classification decision tree
+## Classification — `[ai-stack]`
 
-For each settled item, ask in order:
+- **Reusable rule that should govern future decisions?** → **PRINCIPLE** →
+  `01_principles.md`. *Rare.* Most things that feel like principles are decisions that
+  *apply* one.
+- **Concrete choice made and acted on?** → **DECISION** → `06_decisions-log.md`. If it
+  changes an existing decision's rubric/policy/scope it is still a *new numbered
+  decision*, titled `(amends #MMM)`, linking #MMM in **Related:**.
+- **Considered and explicitly parked, with a revisit trigger?** → **DEFERRED** →
+  `06b_deferred-decisions.md`. No trigger → it's backlog.
+- **Not-built-yet work, no fork?** → **BACKLOG** → `07_backlog.md`.
+- **Agent spec/status/runbook changed?** → **AGENT SPEC** → `04_agents/NN_*.md`, plus a
+  decision if a *choice* drove it.
 
-- **Is it a reusable rule that should govern future decisions** (a commitment, not a
-  specific choice)? → **PRINCIPLE** → `01_principles.md`. *Rare.* See the guardrail
-  below — most things that feel like principles are actually decisions that *apply* an
-  existing principle. A new principle is a genuine addition to the constitution, not a
-  restatement.
-- **Was a concrete choice made and acted on** (built, adopted, fixed, reversed)? →
-  **DECISION** → `06_decisions-log.md`.
-  - If it changes an existing decision's rubric/policy/scope → it's still a *new
-    numbered decision*, titled `(amends #MMM)`, and it links #MMM in **Related:**.
-    Flag separately if the old note's body must actually be *edited* (e.g. a carve-out
-    removed), not merely cross-referenced.
-- **Was something considered and explicitly parked**, with a revisit trigger? →
-  **DEFERRED** → `06b_deferred-decisions.md`. Deferred means *the decision is real and
-  logged as "not now"* — not "might be nice." If it has no trigger, it's backlog.
-- **Is it just not-built-yet work** (no decision, no fork — a task)? → **BACKLOG** →
-  `07_backlog.md`. Do **not** put these in 06b.
-- **Did an agent's spec/status/runbook change** (status `live`→…, new trigger, new
-  I/O)? → **AGENT SPEC** → `04_agents/NN_*.md`, plus a decision entry if a *choice*
-  drove the change.
+## Classification — `[career]`
 
-One session item can produce entries in more than one place (a decision that also
-bumps an agent's status and adds a backlog follow-up). That's normal — list all.
+The spine is seven files: `00_INDEX.md`, `00_README.md`, `06_decisions-log.md`,
+`06a_decisions-index.md`, `07_backlog.md`, `CLAUDE.md`, everything in `90_meta/`.
+**A change to any of them is briefed, never written** (C-014).
 
-## Formats (fall back to these; prefer the live vault files)
+- **A ruling — anything normative, or anything that resolves a contradiction?** →
+  **`C-NNN`** → `06_decisions-log.md`, appended by the documentation chat. Propose the
+  number as *unassigned*.
+- **An application moved** (created, sent, stage change, closed)? → **INDEX ROW** →
+  `00_INDEX.md`. Buckets: 1 Drafting · 2 Applying · 3 Negotiating · 4 Closed
+  (4a Rejected — ended by them / 4b Refused — ended by me). State the row **as it should
+  read**, and the bucket it moves from and to.
+- **Work not yet done?** → **BACKLOG** → `07_backlog.md`, **naming the section**: §0
+  Dated · §1 Blocking · §2 To build or decide · §3 Parked · §4 Owed register · §5 Mirror
+  register.
+- **Considered and parked?** → `07_backlog.md` **§3**, with the reason. There is no
+  `06b_deferred-decisions.md` in this vault — do not invent one.
+- **A GS-owned or profile file now needs a change** (`10_profile/`)? → say which file and
+  what it needs. Do not edit an existing one unless you are the documentation chat (C-023).
+- **`06a_decisions-index.md` is generated from the log and never hand-edited.** Never
+  brief a change to it; it follows the log automatically.
 
-**Decision** (`06_decisions-log.md`) — ADR, entries separated by `---`:
+**State the change, not the rewritten file.** A brief containing a rewritten
+`00_INDEX.md` is a chat writing the spine through a side door.
+
+## Formats (prefer the live files)
+
+**Decision — `[ai-stack]`** (`06_decisions-log.md`), ADR, entries separated by `---`:
 
 ```
 ## NNN — YYYY-MM-DD — Title  [· optional ✅ CLOSED / ⚠️ REVISED badge]
 
 **Decision:** what was decided, in one line.
-**Alternatives considered:** what else was on the table (bulleted; "rejected — why").
+**Alternatives considered:** what else was on the table ("rejected — why").
 **Rationale:** why this won.   ← or **Fix:** / **Mechanism:** / **Firing rules:** /
-                                  **Live result:** as the content demands; the labels
-                                  are flexible, the one-line Decision is not.
+                                  **Live result:** as content demands; labels flexible,
+                                  the one-line Decision is not.
 **Revisit when:** the condition that should trigger reconsideration.
-**Related:** #NNN (amended/sibling), `01_principles.md #NN`, `04_agents/..md`.  *Files:* code touched.
+**Related:** #NNN, `01_principles.md #NN`, `04_agents/..md`.  *Files:* code touched.
 ```
 
-Keep **Decision:** to one line. If you can't, the decision isn't crisp yet — split it.
+**Decision — `[career]`** (`06_decisions-log.md`) — same discipline, `C-NNN` space,
+number proposed unassigned. Two rules specific to this vault:
 
-**Deferred** (`06b_deferred-decisions.md`) — grouped under a `## AGENT` header:
+- **A `C-NNN` entry never cites an `01_inbox/` path** (C-019). Inbox notes are
+  incorporated and deleted; an append-only log must not name a disposable file.
+- If the ruling belongs in `CLAUDE.md`, say so — that file is **derived**, and a clause
+  there without a `C-NNN` citation is an agent legislating for itself.
+
+**Deferred — `[ai-stack]`** (`06b_deferred-decisions.md`), under a `## AGENT` header:
 
 ```
 ### Title
@@ -122,43 +183,50 @@ Keep **Decision:** to one line. If you can't, the decision isn't crisp yet — s
 **Revisit trigger:** the specific condition/data that should bring it back.
 ```
 
-**Principle** (`01_principles.md`) — `## N. Title` + a short prose paragraph stating
-the commitment and its consequence. Rare. If added, every decision that applies it
-should reference `01_principles.md #N`.
+**Principle** (`_ai_vault/01_principles.md`) — `## N. Title` + short prose. Rare, and
+**ai-stack only**: `01_principles.md` is the constitution above both vaults and lives
+there. A career session proposing one is proposing into `_ai_vault`.
 
-**Backlog** (`07_backlog.md`) — a line item, not an ADR. No rationale block.
+**Backlog** — a line item, not an ADR. No rationale block. `[career]` name the section.
 
 ## Guardrails (run before presenting)
 
 **Principle vs decision** — the recurring error. Recall-over-precision is **principle
-#16**, *not* a decision; decisions *cite* it. Test: "Would this sentence still be true
-and useful across unrelated future agents?" If yes → principle. If it's a choice about
-*this* system *now* → decision. When unsure, it's a decision. Do not mint new
-principles to dignify ordinary decisions.
+#16**, not a decision; decisions *cite* it. Test: "Would this sentence still be true and
+useful across unrelated future agents?" Yes → principle. A choice about *this* system
+*now* → decision. When unsure, decision.
 
-**Linkage discipline** — every decision's **Related:** must carry, where they exist:
-(a) the decision(s) it amends or supersedes, (b) the principle(s) it applies,
-(c) sibling decisions from the same session, (d) the agent/spec file it touches, and
-`*Files:*` for code. A decision with no Related line is almost always under-linked —
-check again before accepting it.
+**Reported vs inferred — `[career]`, and the rule that makes the record trustworthy.**
+Every agent-written line distinguishes them and labels the inference. "GS reports the
+recruiter cited seniority" and "the reply reads as a seniority objection" are different
+claims. A record that blurs them is worse than none, because it reads as evidence.
+
+**Linkage discipline** — every decision's **Related:** carries, where they exist: what it
+amends or supersedes, the principle(s) it applies, sibling decisions from the session, the
+agent/spec file it touches, `*Files:*` for code. No Related line is almost always
+under-linked.
+
+**Reference namespace — never un-prefix.** `C-NNN` = career decision. Bare `#NNN` =
+always an ai-stack decision, never re-minted in career. `#N` inside a principles
+quotation = a principle. `D-NNN` = ai-stack deferred. `C-` is prefix-disjoint from the
+others, which is the only reason a fourth space is acceptable.
 
 **Amendment needs a real edit** — when a new decision *changes* an old one (removes a
-carve-out, redefines a category, flips a default), say so explicitly in the briefing
-under a short "Amendments needing an edit (not just append)" list, naming the old
-`#NNN` and what in its body must change. The downstream skill edits the old note;
-don't let it silently diverge from the new one.
+carve-out, redefines a category, flips a default), list it under "Amendments needing an
+edit (not just append)", naming the old number and what in its body must change.
 
-**Numbering is best-effort and downstream-authoritative.** Propose sequential numbers
-from the current max you read in `06_decisions-log.md`, but state once, near the top:
-*"Numbers proposed; the vault-reconciliation skill assigns final ones — confirm against
-the live max."* Don't agonize, don't renumber mid-briefing, don't burn tokens
-reconciling — that's the other conversation's job.
+**Numbering is proposed, downstream-authoritative.** Propose from the max you read, and
+state once near the top: *"Numbers proposed; the downstream owner greps the live max
+before appending."* Don't renumber mid-brief.
+
+**Never copy the golden record.** The job-search SQLite row id belongs to the DB on
+`homeserver`. Reference it; never restate `fit_score` or the scorer's reasoning in either
+vault outside a frozen `handoff.md`. That is `01_principles.md` #3 breaking.
 
 **Terse house style** — conclusions first, no filler, no hedging, no marketing verbs.
-Composes with the `de-slop` style layer. The briefing is read by a reconciliation
-process and by Guillaume; both want signal.
+Composes with `de-slop`. The brief is read by a process and by Guillaume; both want signal.
 
-## Output shape
+## Output shape — `[ai-stack]`
 
 ```
 # Vault brief — <area/agent>, YYYY-MM-DD
@@ -168,26 +236,65 @@ process and by Guillaume; both want signal.
 Numbers proposed; the vault-reconciliation skill assigns final ones (current max in
 06_decisions-log.md = #NNN). Apply prior unapplied briefs first if any are open.
 
-## Principles  → 01_principles.md        (omit the section if none — usually none)
-## Decisions  → 06_decisions-log.md
-## Deferred   → 06b_deferred-decisions.md
-## Backlog    → 07_backlog.md
-## Agent spec → 04_agents/NN_*.md         (status/trigger/IO changes)
+## Principles  → 01_principles.md        (omit if none — usually none)
+## Decisions   → 06_decisions-log.md
+## Deferred    → 06b_deferred-decisions.md
+## Backlog     → 07_backlog.md
+## Agent spec  → 04_agents/NN_*.md
 
 ## Amendments needing an edit (not just append)
 - #NNN — <what in the old note must change, and why>
 
 ## Open / next (carry-forward — NOT for the vault)
-<the running thread for the next session; not vault content>
 ```
 
-Omit empty sections. Lead with whatever dominated the session (often Decisions).
+## Output shape — `[career]`
+
+```
+<YAML: type: inbox · tags: [p/career, t/brief] · brief-from: · applied: blank>
+
+# Brief — <slug>, YYYY-MM-DD
+
+<1–2 lines: what changed, and what is now due.>
+
+Numbers proposed; the documentation chat greps the live max before appending.
+
+## Index rows  → 00_INDEX.md
+- <row as it should read> — bucket N → bucket M, and why
+
+## Decisions   → 06_decisions-log.md   (C-NNN, number unassigned)
+## Backlog     → 07_backlog.md         (name the section: §0–§5)
+## Constitution → CLAUDE.md            (only transcribing a C-NNN, cite it)
+## Profile     → 10_profile/<file>     (what it needs; do not edit it here)
+
+## Amendments needing an edit (not just append)
+
+## Open / next (carry-forward — NOT for the vault)
+```
+
+Omit empty sections. Lead with whatever dominated the session.
+
+## Ending a career session
+
+The brief is step 1 of three. Also produce:
+
+2. **One copy-pasteable git block**, opening with `cd C:\dev\_career_vault` (see
+   `90_meta/git.md`). Message convention `<slug>: <what changed>`; vault-wide work uses
+   `vault: <what>`. **Keep the *why* in the message** — for a `.docx` the diff shows
+   almost nothing. In a surface with no shell, this block is how the commit happens at
+   all; in Claude Code, offer to run it rather than assuming.
+3. **Two lines**: what changed, and what is now due.
+
+Commit points: hand-off landing · end of every drafting session, even mid-draft · send ·
+every stage transition and touchpoint · the monthly pass.
+
+**The project-doc mirror is not this session's job** — the documentation chat writes and
+stamps the five mirrored files (C-015, C-016).
 
 ## After presenting
 
-State where the file was saved (`<vault-root>\01_inbox\`) and that this is the input
-for the vault-reconciliation conversation — it will pick the brief up from the inbox
-and apply it. Be precise about what did and didn't happen: dropping the brief file into
-`01_inbox/` is staging, **not** a vault write — no vault *entries* (decisions log,
-principles, agent specs) were created or edited from here. The reconciliation workflow
-owns the actual application, final numbering, and CRLF.
+State where the file was written and who applies it: `[ai-stack]` the
+vault-reconciliation conversation, `[career]` the campaign-documentation chat. Be precise
+about what did and did not happen — **dropping a file into `01_inbox/` is staging, not a
+vault write.** No governed entry (decisions log, principles, index row, agent spec) was
+created or edited from here. The downstream owns application, final numbering, and CRLF.
