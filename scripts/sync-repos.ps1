@@ -1,8 +1,15 @@
 # SessionStart hook: keep local repos in sync with GitHub across both PCs.
-# Fetches ~/.claude/skills and every git repo directly under C:\dev
-# (including the ai-stack vault at C:\dev\_ai_vault), then fast-forward
-# pulls any repo that is behind and has a clean working tree.
+# Fetches ~/.claude/skills and every git repo directly under C:\dev - the
+# list is discovered, not hardcoded, so a new repo is covered the moment it
+# exists. Today that means both Obsidian vaults (_ai_vault, _career_vault)
+# and the code repos (ai-stack-agents, pdf_to_md). Then fast-forward pulls
+# any repo that is behind and has a clean working tree.
 # Never rebases, merges, or touches dirty trees - it only reports those.
+#
+# The two vaults have their origin on homeserver over SSH; the code repos are
+# on GitHub. Off the home network, or with the 1Password SSH agent locked, the
+# vault fetches fail and report "fetch failed" while GitHub still pulls. A
+# partial sync line means the vaults are unreachable, not that the hook broke.
 
 $env:GIT_TERMINAL_PROMPT = '0'
 
